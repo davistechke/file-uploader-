@@ -35,12 +35,12 @@ So uploaded files survive redeploys:
 
 ## Admin Login
 - URL: `https://your-app.onrender.com/admin`
-- Username: `mack`
-- Password: `ajega`
+- Username: `test`
+- Password: `root`
 
 ## Local Development
 ```bash
 pip install -r requirements.txt
 python app.py
 ```
-Visit http://localhost:5000
+Visit http://l:5000
