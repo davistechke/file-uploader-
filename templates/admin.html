@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CrackedApp — Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0a;--bg2:#111;--card:#161616;
+  --border:#1f1f1f;--border2:#2a2a2a;
+  --green:#00e676;--green2:#00c853;
+  --green-dim:rgba(0,230,118,.08);--green-border:rgba(0,230,118,.18);
+  --red:#f44336;--red-dim:rgba(244,67,54,.08);--red-border:rgba(244,67,54,.2);
+  --white:#fff;--white2:#e0e0e0;--grey:#6b6b6b;--grey2:#444;
+  --ff:'Inter',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:var(--ff);font-size:15px;min-height:100vh}
+a{text-decoration:none;color:inherit}
+button,input,select,textarea{font-family:var(--ff)}
+
+/* ── LOGIN ── */
+.login-wrap{
+  min-height:100vh;display:flex;align-items:center;
+  justify-content:center;padding:24px;
+}
+.login-card{
+  width:100%;max-width:400px;
+  background:var(--card);
+  border:1px solid var(--border2);
+  border-radius:12px;
+  padding:40px 36px;
+}
+.login-logo{font-size:22px;font-weight:800;margin-bottom:4px}
+.login-logo span{color:var(--green)}
+.login-tagline{font-size:12px;color:var(--grey);margin-bottom:32px}
+
+.form-group{margin-bottom:18px}
+.form-label{display:block;font-size:11px;font-weight:600;color:var(--grey);letter-spacing:.5px;text-transform:uppercase;margin-bottom:7px}
+.form-input{
+  width:100%;background:var(--bg2);
+  border:1px solid var(--border2);border-radius:7px;
+  padding:11px 14px;
+  font-size:14px;color:var(--white);outline:none;
+  transition:border-color .18s,box-shadow .18s;
+}
+.form-input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,230,118,.08)}
+.form-input::placeholder{color:var(--grey)}
+.btn-login{
+  width:100%;padding:12px;margin-top:6px;
+  background:var(--green);color:#000;
+  border:none;border-radius:7px;
+  font-size:14px;font-weight:700;
+  cursor:pointer;transition:background .18s;
+  letter-spacing:.3px;
+}
+.btn-login:hover{background:var(--green2)}
+
+.alert{
+  padding:10px 14px;border-radius:7px;
+  font-size:13px;font-weight:500;
+  margin-bottom:18px;
+}
+.alert-error{background:var(--red-dim);border:1px solid var(--red-border);color:var(--red)}
+.alert-success{background:var(--green-dim);border:1px solid var(--green-border);color:var(--green)}
+
+/* ── ADMIN HEADER ── */
+header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(10,10,10,.97);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:0 32px;height:60px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.logo{font-size:18px;font-weight:800}
+.logo span{color:var(--green)}
+.header-right{display:flex;align-items:center;gap:12px}
+.admin-pill{
+  font-size:11px;font-weight:600;
+  color:var(--green);
+  background:var(--green-dim);
+  border:1px solid var(--green-border);
+  padding:4px 14px;border-radius:20px;
+}
+.btn-logout{
+  font-size:12px;font-weight:600;
+  color:var(--grey);
+  border:1px solid var(--border2);
+  padding:5px 14px;border-radius:6px;
+  transition:color .15s,border-color .15s;
+  background:none;cursor:pointer;
+}
+.btn-logout:hover{color:var(--red);border-color:var(--red-border)}
+
+/* ── MAIN ── */
+.admin-wrap{max-width:1000px;margin:0 auto;padding:32px 32px 80px}
+
+/* stats */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px}
+.stat-val{font-size:28px;font-weight:800;color:var(--green);letter-spacing:-1px}
+.stat-lbl{font-size:11px;font-weight:500;color:var(--grey);text-transform:uppercase;letter-spacing:.6px;margin-top:4px}
+
+/* cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:20px}
+.card-hdr{
+  padding:16px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.card-title{font-size:13px;font-weight:700;color:var(--white);letter-spacing:.2px}
+.card-body{padding:20px}
+
+/* upload */
+.drop-zone{
+  border:1.5px dashed var(--border2);border-radius:8px;
+  padding:40px 24px;text-align:center;
+  cursor:pointer;transition:border-color .18s,background .18s;
+  position:relative;
+}
+.drop-zone:hover,.drop-zone.drag-over{
+  border-color:var(--green);background:var(--green-dim);
+}
+#file-input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.drop-icon{
+  width:40px;height:40px;margin:0 auto 14px;
+  stroke:var(--grey);fill:none;stroke-width:1.5;display:block;
+}
+.drop-title{font-size:14px;font-weight:600;color:var(--white2);margin-bottom:6px}
+.drop-hint{font-size:12px;color:var(--grey);line-height:1.5}
+.drop-hint span{color:var(--green);font-weight:600}
+
+.selected-files{margin-top:14px;display:flex;flex-direction:column;gap:6px}
+.sel-file{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:6px;padding:8px 14px;
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:12px;
+}
+.sel-file-name{color:var(--white2);font-weight:500}
+.sel-file-size{color:var(--grey)}
+
+.form-textarea{
+  width:100%;background:var(--bg2);
+  border:1px solid var(--border2);border-radius:7px;
+  padding:11px 14px;font-size:13px;color:var(--white);
+  outline:none;resize:vertical;min-height:80px;
+  transition:border-color .18s,box-shadow .18s;
+  margin-top:14px;
+}
+.form-textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,230,118,.08)}
+.form-textarea::placeholder{color:var(--grey)}
+.textarea-label{font-size:11px;font-weight:600;color:var(--grey);letter-spacing:.5px;text-transform:uppercase;margin-top:16px;display:block}
+
+.btn-upload{
+  margin-top:14px;width:100%;padding:11px;
+  background:var(--green);color:#000;
+  border:none;border-radius:7px;
+  font-size:13px;font-weight:700;
+  cursor:pointer;transition:background .18s;
+  letter-spacing:.3px;
+}
+.btn-upload:hover{background:var(--green2)}
+
+/* table */
+.files-table{width:100%;border-collapse:collapse}
+.files-table th{
+  padding:10px 16px;text-align:left;
+  font-size:10px;font-weight:700;color:var(--grey);
+  letter-spacing:.8px;text-transform:uppercase;
+  background:rgba(255,255,255,.02);
+  border-bottom:1px solid var(--border);
+}
+.files-table td{
+  padding:14px 16px;
+  border-bottom:1px solid var(--border);
+  font-size:13px;vertical-align:top;
+}
+.files-table tr:last-child td{border:none}
+.files-table tr:hover td{background:rgba(255,255,255,.015)}
+
+.fname{font-weight:600;color:var(--white);margin-bottom:3px}
+.fdesc-display{font-size:12px;color:var(--grey);margin-top:4px;line-height:1.5}
+.fdesc-display.has-desc{color:var(--white2)}
+
+.ext-badge{
+  font-size:10px;font-weight:700;
+  color:var(--green);background:var(--green-dim);
+  border:1px solid var(--green-border);
+  padding:2px 8px;border-radius:4px;
+  text-transform:uppercase;letter-spacing:.4px;
+  display:inline-block;
+}
+.fsize{font-size:11px;color:var(--grey)}
+
+.actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.btn-edit{
+  font-size:11px;font-weight:600;
+  color:var(--white2);background:rgba(255,255,255,.06);
+  border:1px solid var(--border2);
+  padding:5px 12px;border-radius:5px;cursor:pointer;
+  transition:all .15s;
+}
+.btn-edit:hover{border-color:var(--green-border);color:var(--green)}
+.btn-dl{
+  font-size:11px;font-weight:600;
+  color:var(--green);background:var(--green-dim);
+  border:1px solid var(--green-border);
+  padding:5px 12px;border-radius:5px;
+  text-decoration:none;display:inline-block;
+  transition:background .15s;
+}
+.btn-dl:hover{background:rgba(0,230,118,.15)}
+.btn-del{
+  font-size:11px;font-weight:600;
+  color:var(--red);background:var(--red-dim);
+  border:1px solid var(--red-border);
+  padding:5px 12px;border-radius:5px;cursor:pointer;
+  transition:background .15s;
+}
+.btn-del:hover{background:rgba(244,67,54,.15)}
+
+.empty-row td{text-align:center;color:var(--grey);padding:40px;font-size:13px}
+
+/* edit inline */
+.edit-row{display:none;padding:10px 16px 14px;background:rgba(0,230,118,.03);border-top:1px solid var(--green-border)}
+.edit-row.open{display:block}
+.edit-row textarea{
+  width:100%;background:var(--bg2);
+  border:1px solid var(--border2);border-radius:6px;
+  padding:9px 12px;font-size:12px;color:var(--white);
+  outline:none;resize:vertical;min-height:60px;
+  transition:border-color .18s;
+}
+.edit-row textarea:focus{border-color:var(--green)}
+.edit-row-btns{display:flex;gap:8px;margin-top:8px}
+.btn-save-desc{
+  padding:6px 16px;background:var(--green);color:#000;
+  border:none;border-radius:5px;font-size:12px;font-weight:700;cursor:pointer;
+}
+.btn-save-desc:hover{background:var(--green2)}
+.btn-cancel-edit{
+  padding:6px 14px;background:none;color:var(--grey);
+  border:1px solid var(--border2);border-radius:5px;font-size:12px;cursor:pointer;
+}
+
+/* flash */
+.flash-wrap{margin-bottom:20px;display:flex;flex-direction:column;gap:8px}
+</style>
+</head>
+<body>
+
+{% if not logged_in %}
+<!-- ═══ LOGIN ═══ -->
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="login-logo">Cracked<span>App</span></div>
+    <div class="login-tagline">Admin access only</div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+    <div class="alert alert-{{ 'success' if cat == 'success' else 'error' }}">{{ msg }}</div>
+    {% endfor %}
+    {% endwith %}
+
+    <form method="POST" action="/admin">
+      <input type="hidden" name="login" value="1">
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input class="form-input" type="text" name="username" placeholder="Username" required autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" name="password" placeholder="Password" required>
+      </div>
+      <button class="btn-login" type="submit">Sign In</button>
+    </form>
+  </div>
+</div>
+
+{% else %}
+<!-- ═══ ADMIN PANEL ═══ -->
+<header>
+  <div class="logo">Cracked<span>App</span></div>
+  <div class="header-right">
+    <span class="admin-pill">Admin — Mack</span>
+    <a href="/admin/logout"><button class="btn-logout">Sign Out</button></a>
+  </div>
+</header>
+
+<div class="admin-wrap">
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="flash-wrap">
+    {% for cat, msg in messages %}
+    <div class="alert alert-{{ 'success' if cat == 'success' else 'error' }}">{{ msg }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-val">{{ files|length }}</div>
+      <div class="stat-lbl">Total Files</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">{{ files|selectattr('description')|list|length }}</div>
+      <div class="stat-lbl">With Description</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" style="color:#fff">Live</div>
+      <div class="stat-lbl">Status</div>
+    </div>
+  </div>
+
+  <!-- UPLOAD -->
+  <div class="card">
+    <div class="card-hdr">
+      <span class="card-title">Upload Files</span>
+    </div>
+    <div class="card-body">
+      <form method="POST" action="/admin/upload" enctype="multipart/form-data" id="upload-form">
+        <div class="drop-zone" id="drop-zone">
+          <input type="file" name="files" id="file-input" multiple>
+          <svg class="drop-icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <div class="drop-title">Drop files here or <span style="color:var(--green)">browse</span></div>
+          <div class="drop-hint">Supports: exe, apk, zip, rar, pdf, mp4, mp3, dmg and more<br>Max 500 MB per file</div>
+        </div>
+        <div class="selected-files" id="selected-files"></div>
+
+        <label class="textarea-label">Description <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--grey)">(shown below the file on the site — what is this for?)</span></label>
+        <textarea class="form-textarea" name="description" placeholder="e.g. Adobe Photoshop 2024 full version with crack — for photo editing and design. Works on Windows 10/11."></textarea>
+
+        <button class="btn-upload" type="submit">Upload</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- FILES -->
+  <div class="card">
+    <div class="card-hdr">
+      <span class="card-title">Manage Files</span>
+      <span style="font-size:12px;color:var(--grey)">{{ files|length }} file{{ 's' if files|length != 1 else '' }}</span>
+    </div>
+    <table class="files-table">
+      <thead>
+        <tr>
+          <th>File</th>
+          <th>Type</th>
+          <th>Size</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if files %}
+        {% for f in files %}
+        <tr>
+          <td>
+            <div class="fname">{{ f.name }}</div>
+            <div class="fdesc-display {{ 'has-desc' if f.description else '' }}">
+              {{ f.description if f.description else 'No description' }}
+            </div>
+          </td>
+          <td><span class="ext-badge">{{ f.ext }}</span></td>
+          <td><span class="fsize">{{ f.size_str }}</span></td>
+          <td>
+            <div class="actions">
+              <button class="btn-edit" onclick="toggleEdit('{{ loop.index }}')">Edit desc</button>
+              <a href="/download/{{ f.name }}" class="btn-dl">Download</a>
+              <form method="POST" action="/admin/delete/{{ f.name }}" style="display:inline" onsubmit="return confirm('Delete {{ f.name }}?')">
+                <button class="btn-del" type="submit">Delete</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        <!-- Inline edit row -->
+        <tr>
+          <td colspan="4" style="padding:0;border-bottom:1px solid var(--border)">
+            <div class="edit-row" id="edit-{{ loop.index }}">
+              <form method="POST" action="/admin/update_desc">
+                <input type="hidden" name="filename" value="{{ f.name }}">
+                <textarea name="description" placeholder="Enter description for this file...">{{ f.description }}</textarea>
+                <div class="edit-row-btns">
+                  <button class="btn-save-desc" type="submit">Save</button>
+                  <button class="btn-cancel-edit" type="button" onclick="toggleEdit('{{ loop.index }}')">Cancel</button>
+                </div>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr class="empty-row"><td colspan="4">No files uploaded yet.</td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+{% endif %}
+
+<script>
+// ── Drop zone ──────────────────────────────────────────────────────────────
+const zone    = document.getElementById('drop-zone');
+const input   = document.getElementById('file-input');
+const preview = document.getElementById('selected-files');
+
+zone?.addEventListener('dragover',  e => { e.preventDefault(); zone.classList.add('drag-over'); });
+zone?.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+zone?.addEventListener('drop', e => {
+  e.preventDefault();
+  zone.classList.remove('drag-over');
+  if (input) { input.files = e.dataTransfer.files; showSelected(e.dataTransfer.files); }
+});
+input?.addEventListener('change', () => showSelected(input.files));
+
+function showSelected(files) {
+  if (!preview) return;
+  preview.innerHTML = '';
+  Array.from(files).forEach(f => {
+    const d = document.createElement('div');
+    d.className = 'sel-file';
+    d.innerHTML = `<span class="sel-file-name">${f.name}</span><span class="sel-file-size">${fmtSize(f.size)}</span>`;
+    preview.appendChild(d);
+  });
+}
+
+function fmtSize(b) {
+  const u = ['B','KB','MB','GB'];
+  let i = 0;
+  while (b >= 1024 && i < u.length - 1) { b /= 1024; i++; }
+  return `${b.toFixed(1)} ${u[i]}`;
+}
+
+// ── Inline edit toggle ─────────────────────────────────────────────────────
+function toggleEdit(id) {
+  const el = document.getElementById('edit-' + id);
+  if (!el) return;
+  const isOpen = el.classList.contains('open');
+  // Close all first
+  document.querySelectorAll('.edit-row').forEach(r => r.classList.remove('open'));
+  if (!isOpen) el.classList.add('open');
+}
+</script>
+</body>
+</html>
