@@ -20,8 +20,8 @@ In Render → your service → Environment:
 | Key | Value |
 |-----|-------|
 | `SECRET_KEY` | (any long random string) |
-| `ADMIN_USERNAME` | `mack` |
-| `ADMIN_PASSWORD` | `ajega` |
+| `ADMIN_USERNAME` | `admin` |
+| `ADMIN_PASSWORD` | `root` |
 
 ### Step 4 — Add a Disk (IMPORTANT)
 So uploaded files survive redeploys:
@@ -43,4 +43,4 @@ So uploaded files survive redeploys:
 pip install -r requirements.txt
 python app.py
 ```
-Visit http://l:5000
+Visit https://crackedapps.onrender.com
